@@ -116,4 +116,21 @@ cd ./server
 rq worker parsing-tasks
 ```
 
+#### Monit
+Example for CentOS, source code is located at ```/opt/moso/doc_ai```
+```
+yum -y install epel-release
+yum -y install monit
+
+service monit start
+
+cp /opt/moso/doc_ai/deployment/slack_notification.sh /etc/slack_notification.sh
+chmod +x /etc/slack_notification.sh
+
+cp /opt/moso/doc_ai/deployment/doc_ai_monit_prod /etc/monit.d/doc_ai_monit_prod
+
+monit -c /etc/monitrc
+monit reload
+
+```
 
