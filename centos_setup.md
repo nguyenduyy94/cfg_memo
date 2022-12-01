@@ -63,4 +63,57 @@ mkdir /var/www/dashboard
 chcon -Rt httpd_sys_content_t /var/www/
 ```
 
+<b>REQUIRE: Python3.8+</b>
+#### Init a virtual env
+```
+pip3.8 install virtualenv
+python3.8 -m venv venv
+```
+
+#### Switch to Virtual Enviroment
+```
+source venv/bin/activate
+activate
+```
+
+#### Build UI app
+```
+npm install
+(If get error) npm install --legacy-peer-deps --unsafe-perm=true
+npm run build
+```
+
+#### Install poppler-utils which is required by pdf2image
+sudo apt-get install poppler-utils
+(Or CentOS) yum install poppler-utils mesa-libGL
+(Or MacOS) brew install poppler
+
+
+#### Setup AWS env
+```
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+$ aws configure
+AWS Access Key ID [None]: <get from https://console.aws.amazon.com/iam/home#/users/moso-doc-ai-server?section=security_credentials>
+AWS Secret Access Key [None]: <get from https://console.aws.amazon.com/iam/home#/users/moso-doc-ai-server?section=security_credentials>
+Default region name [None]: us-east-2
+Default output format [None]: json
+
+```
+
+#### Start Task Queue 
+```
+# Go to root folder where docker-compose.yml is located, then
+docker-compose up -d redis
+
+# In MacOS, always set this env to allow RQ task queue to fork processes
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+
+# Start a queue with name 'parsing-tasks'
+cd ./server
+rq worker parsing-tasks
+```
+
 
